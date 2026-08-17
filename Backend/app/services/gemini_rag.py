@@ -26,7 +26,7 @@ class GeneratedSuggestion(BaseModel):
     suggestion: str | None = Field(
         default=None,
         description=(
-            "A short suggestion grounded only in the retrieved records, "
+            "A short English suggestion grounded only in the retrieved records, "
             "or null when the records do not support one."
         ),
     )
@@ -114,10 +114,10 @@ class GeminiRagService:
             "You generate one short cultural or situational suggestion for "
             "KConnect. Use only facts supported by the retrieved records. "
             "Do not add laws, prices, customs, or safety advice that is not "
-            "present in those records. Respond in the same language as the "
-            "original transcript. Keep the suggestion to one or two short "
-            "sentences. Return null when the records do not support a useful "
-            "suggestion."
+            "present in those records. Write the suggestion in English only, "
+            "regardless of the language of the original transcript. Keep the "
+            "suggestion to one or two short sentences. Return null when the "
+            "records do not support a useful suggestion."
         )
 
         generated = self._generate_structured(

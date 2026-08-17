@@ -200,6 +200,36 @@ def test_gemini_service_validates_intent_and_generates_tip():
     )
     assert suggestion == "Fasten the passenger helmet."
     assert len(models.requests) == 2
+    suggestion_instruction = models.requests[1]["config"].system_instruction
+    assert "Write the suggestion in English only" in suggestion_instruction
+
+
+def test_gemini_service_requests_english_tip_for_kinyarwanda_transcript():
+    models = FakeGeminiModels(
+        [
+            SimpleNamespace(
+                parsed=GeneratedSuggestion(
+                    suggestion="Fasten the passenger helmet."
+                ),
+                text=None,
+            )
+        ]
+    )
+    service = GeminiRagService(
+        client=SimpleNamespace(models=models),
+        model="test-generation-model",
+    )
+
+    suggestion = service.generate_suggestion(
+        transcript="Ese nkeneye kwambara ingofero?",
+        intent=helmet_intent(),
+        records=[helmet_record()],
+    )
+
+    assert suggestion == "Fasten the passenger helmet."
+    instruction = models.requests[0]["config"].system_instruction
+    assert "Write the suggestion in English only" in instruction
+    assert "same language as the original transcript" not in instruction
 
 
 def test_gemini_service_rejects_unknown_taxonomy_labels():
